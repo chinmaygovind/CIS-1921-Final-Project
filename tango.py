@@ -70,8 +70,7 @@ class TangoCPSATSolver:
             solution = [[solver.Value(self.x[r][c]) for c in range(self.n)] for r in range(self.n)]
             #print solution with symbols
             for row in solution:
-                #print sun/moon emojis with same size (the sun is curently wider than the moon)
-                print("".join("☀️ " if cell == 1 else "🌙 " for cell in row))
+                print(" ".join("☀️" if cell == 1 else "🌙" for cell in row))
         else:
             raise Exception("No solution found")
 # Test case
