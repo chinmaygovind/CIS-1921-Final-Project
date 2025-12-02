@@ -55,11 +55,23 @@ class QueensSATSolver:
                     r2, c2 = region_cells[j]
                     self.clauses.append([-self.x(r1, c1), -self.x(r2, c2)])
     
+    def no_two_touching(self):
+        # no two queens can be adjacent (including diagonals)
+        for r1 in range(self.size):
+            for c1 in range(self.size):
+                for dr in [-1, 0, 1]:
+                    for dc in [-1, 0, 1]:
+                        if dr == 0 and dc == 0:
+                            continue
+                        r2 = r1 + dr
+                        c2 = c1 + dc
+                        if 0 <= r2 < self.size and 0 <= c2 < self.size:
+                            self.clauses.append([-self.x(r1, c1), -self.x(r2, c2)])
     def solve(self):
         self.add_givens()
         self.add_rows_cols_constraints()
         self.add_regions_constraints()
-        
+        self.no_two_touching()
         solution = pycosat.solve(self.clauses)
         if solution == 'UNSAT':
             return None

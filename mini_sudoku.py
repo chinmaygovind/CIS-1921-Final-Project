@@ -1,4 +1,5 @@
 import pycosat
+import random
 
 class MiniSudokuSATSolver:
 
@@ -83,3 +84,55 @@ class MiniSudokuSATSolver:
                         result_grid[r][c] = v
                         break
         return result_grid  
+    
+    # generate a mini sudoku puzzle with p pieces and exactly 1 solution a la homework 1
+    def generate_mini_sudoku(self, p):
+        # implement this algorithm by generating a full solution and removing numbers, and using our sat model to ensure uniqueness
+        board = [list(range(1, 7)) for _ in range(6)]
+        # randomly shuffle rows and columns within their groups
+        num_shuffles = 50
+        for _ in range(num_shuffles):
+            # shuffle rows within row groups
+            for rg in range(3):
+                r1 = random.randint(0, 1) + rg * 2
+                r2 = random.randint(0, 1) + rg * 2
+                board[r1], board[r2] = board[r2], board[r1]
+            # shuffle columns within column groups
+            for cg in range(2):
+                c1 = random.randint(0, 2) + cg * 3
+                c2 = random.randint(0, 2) + cg * 3
+                for r in range(6):
+                    board[r][c1], board[r][c2] = board[r][c2], board[r][c1]
+
+        # remove numbers until only p pieces remain, ensuring uniqueness
+        cells = [(r, c) for r in range(6) for c in range(6)]
+        random.shuffle(cells)
+        num_remaining = 36
+        fails = 0
+        to_try = 0
+        while num_remaining > p:
+            r, c = cells[to_try]
+            original_value = board[r][c]
+            board[r][c] = 0
+            self.grid = board
+            self.clauses = []
+            self.add_givens()
+            self.add_cell_constraints()
+            self.add_row_col_subgrid_constraints()
+            solution = pycosat.solve(self.clauses)
+            # check if solution is unique by adding constraints to exclude the original solution
+            new_constraint = [-self.x(r, c, v) for r in range(6) for c in range(6) for v in range(1, 7) if board[r][c] == v]
+            self.clauses.append(new_constraint)
+            second_solution = pycosat.solve(self.clauses)
+            if second_solution != 'UNSAT':
+                # not unique, restore the value
+                board[r][c] = original_value
+                to_try += 1
+                if to_try >= len(cells):
+                    return self.generate_mini_sudoku(p)
+            else:
+                # solution unique, removal successful
+                cells.remove((r, c))
+                num_remaining -= 1
+                to_try = 0
+        return board
