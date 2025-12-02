@@ -68,35 +68,35 @@ class TangoCPSATSolver:
         
         if status == cp_model.FEASIBLE or status == cp_model.OPTIMAL:
             solution = [[solver.Value(self.x[r][c]) for c in range(self.n)] for r in range(self.n)]
-            #print solution with symbols
-            for row in solution:
-                print(" ".join("☀️" if cell == 1 else "🌙" for cell in row))
+            return solution
         else:
             raise Exception("No solution found")
+        
 # Test case
-n = 6
-grid_test1 = [
-    [-1, 0, 1, 1, 0, -1],
-    [ 0, -1, -1, -1, -1,  0],
-    [ 1, -1, -1, -1, -1,  0],
-    [ 1, -1, -1, -1, -1,  1],
-    [ 0, -1, -1, -1, -1,  1],
-    [-1,  1,  0,  0,  1, -1],
-]
+if __name__ == "__main__":
+    n = 6
+    grid_test1 = [
+        [-1, 0, 1, 1, 0, -1],
+        [ 0, -1, -1, -1, -1,  0],
+        [ 1, -1, -1, -1, -1,  0],
+        [ 1, -1, -1, -1, -1,  1],
+        [ 0, -1, -1, -1, -1,  1],
+        [-1,  1,  0,  0,  1, -1],
+    ]
 
-equals_test1 = [
-    ((1, 1), (2, 1)),
-    ((3, 1), (3, 2)),
-]
+    equals_test1 = [
+        ((1, 1), (2, 1)),
+        ((3, 1), (3, 2)),
+    ]
 
-diffs_test1 = [
-    ((1, 2), (2, 2)),
-    ((1, 3), (1, 4)),
-    ((2, 3), (2, 4)),
-    ((3, 3), (4, 3)),
-    ((3, 4), (4, 4)),
-    ((4, 1), (4, 2)),
-]
+    diffs_test1 = [
+        ((1, 2), (2, 2)),
+        ((1, 3), (1, 4)),
+        ((2, 3), (2, 4)),
+        ((3, 3), (4, 3)),
+        ((3, 4), (4, 4)),
+        ((4, 1), (4, 2)),
+    ]
 
-solver = TangoCPSATSolver(n, grid_test1, equals_test1, diffs_test1)
-solver.solve()
+    solver = TangoCPSATSolver(n, grid_test1, equals_test1, diffs_test1)
+    solver.solve()

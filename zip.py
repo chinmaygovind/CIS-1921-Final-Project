@@ -155,31 +155,32 @@ class ZipCPSATSolver:
         
         return None
 
-grid = [
-    [1, 0, 0, 0, 0, 0],  
-    [0, 2, 0, 0, 0, 0],  
-    [0, 0, 0, 0, 0, 0], 
-    [0, 0, 0, 3, 0, 0],  
-    [0, 0, 0, 0, 0, 0],  
-    [4, 0, 0, 0, 0, 0],  
-]
+if __name__ == "__main__":
+    grid = [
+        [1, 0, 0, 0, 0, 0],  
+        [0, 2, 0, 0, 0, 0],  
+        [0, 0, 0, 0, 0, 0], 
+        [0, 0, 0, 3, 0, 0],  
+        [0, 0, 0, 0, 0, 0],  
+        [4, 0, 0, 0, 0, 0],  
+    ]
 
-walls = {
-    ((0, 0), (1, 0)),
-    ((0, 2), (1, 2)),
-    ((1, 1), (2, 1)),
-    ((2, 0), (3, 0)),
-    ((2, 3), (3, 3)),
-    ((3, 2), (4, 2)),
-    ((3, 5), (4, 5)),
-    ((4, 0), (5, 0)),
-    ((4, 3), (5, 3)),
-    ((4, 4), (5, 4)),
-}
+    walls = {
+        ((0, 0), (1, 0)),
+        ((0, 2), (1, 2)),
+        ((1, 1), (2, 1)),
+        ((2, 0), (3, 0)),
+        ((2, 3), (3, 3)),
+        ((3, 2), (4, 2)),
+        ((3, 5), (4, 5)),
+        ((4, 0), (5, 0)),
+        ((4, 3), (5, 3)),
+        ((4, 4), (5, 4)),
+    }
 
-solver = ZipCPSATSolver(grid, walls)
-solution = solver.solve()
-if solution:
-    solver.print_solution(solution)
-else:
-    print("No solution found")
+    solver = ZipCPSATSolver(grid, walls)
+    solution = solver.solve()
+    if solution:
+        solver.print_solution(solution)
+    else:
+        print("No solution found")
