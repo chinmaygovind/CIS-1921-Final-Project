@@ -63,12 +63,23 @@ class ZipCPSATSolver:
     
     #adds constraints ensuring consecutive positions are adjacent and not blocked
     def add_adjacency_constraints(self):
+        allowed_transitions = {}
+        for r, c in self.cells_to_visit:
+            allowed = []
+            for dr, dc in [(0, 1), (1, 0), (0, -1), (-1, 0)]:
+                nr, nc = r + dr, c + dc
+                if 0 <= nr < self.rows and 0 <= nc < self.cols:
+                    if not self.is_wall_between((r, c), (nr, nc)):
+                        allowed.append((nr, nc))
+            allowed_transitions[(r, c)] = allowed
+        
         for i in range(self.n_tiles - 1):
             for r1, c1 in self.cells_to_visit:
-                for r2, c2 in self.cells_to_visit:
-                    # If not adjacent or blocked by wall, they can't be consecutive
-                    if abs(r1 - r2) + abs(c1 - c2) != 1 or self.is_wall_between((r1, c1), (r2, c2)):
-                        self.model.Add(self.position[(i, r1, c1)] + self.position[(i+1, r2, c2)] <= 1)
+                allowed_next = allowed_transitions[(r1, c1)]
+                # at least one allowed neighbor must be visited at step i+1
+                self.model.Add(
+                    sum(self.position[(i+1, r2, c2)] for r2, c2 in allowed_next) >= 1
+                ).OnlyEnforceIf(self.position[(i, r1, c1)])
     
     
     #adds constraints ensuring numbered cells are visited in increasing order

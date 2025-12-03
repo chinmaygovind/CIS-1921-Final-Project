@@ -9,7 +9,7 @@ from math import floor
 from mini_sudoku import MiniSudokuSATSolver
 from queens import QueensSATSolver
 from tango import TangoCPSATSolver
-from zip import ZipCPSATSolver
+from zip_boolean import ZipCPSATSolver
 
 
 class Visualizer:
